@@ -1,0 +1,302 @@
+# API Contract: Book Content Management System
+
+## Overview
+
+This API contract defines the endpoints for managing content in the Physical AI & Humanoid Robotics book. The API allows for creating, reading, updating, and deleting book content, as well as managing learning paths and exercises.
+
+## Base URL
+
+```
+https://api.physicalai-book.com/v1
+```
+
+## Authentication
+
+All endpoints require authentication via Bearer token:
+
+```
+Authorization: Bearer {access_token}
+```
+
+## Common Headers
+
+- `Content-Type: application/json`
+- `Accept: application/json`
+
+## Error Format
+
+All errors follow this format:
+
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": "Additional error details"
+  }
+}
+```
+
+## Endpoints
+
+### 1. Book Content Management
+
+#### Get All Book Content
+
+```
+GET /content
+```
+
+**Description**: Retrieve a list of all book content items with pagination.
+
+**Query Parameters**:
+- `page` (optional, default: 1): Page number
+- `limit` (optional, default: 20): Number of items per page
+- `type` (optional): Filter by content type (part, chapter, section, exercise)
+- `difficulty` (optional): Filter by difficulty (beginner, intermediate, advanced)
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "id": "content-123",
+      "title": "Introduction to Physical AI",
+      "type": "chapter",
+      "difficulty": "beginner",
+      "estimated_time": 30,
+      "created_date": "2026-01-05T10:00:00Z",
+      "last_updated": "2026-01-05T10:00:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 100,
+    "total_pages": 5
+  }
+}
+```
+
+#### Get Specific Content
+
+```
+GET /content/{content_id}
+```
+
+**Description**: Retrieve a specific piece of book content by ID.
+
+**Response**:
+```json
+{
+  "data": {
+    "id": "content-123",
+    "title": "Introduction to Physical AI",
+    "type": "chapter",
+    "content": "# Introduction to Physical AI\n\nPhysical AI represents...",
+    "objectives": [
+      "Understand the difference between digital and physical AI",
+      "Identify key components of embodied intelligence"
+    ],
+    "difficulty": "beginner",
+    "estimated_time": 30,
+    "prerequisites": ["Basic Python", "Basic AI/ML concepts"],
+    "authors": ["Author Name"],
+    "tags": ["physical-ai", "embodied-intelligence", "introduction"],
+    "created_date": "2026-01-05T10:00:00Z",
+    "last_updated": "2026-01-05T10:00:00Z"
+  }
+}
+```
+
+#### Create New Content
+
+```
+POST /content
+```
+
+**Description**: Create a new piece of book content.
+
+**Request Body**:
+```json
+{
+  "title": "New Chapter Title",
+  "type": "chapter",
+  "content": "# New Chapter\n\nContent goes here...",
+  "objectives": [
+    "Objective 1",
+    "Objective 2"
+  ],
+  "difficulty": "intermediate",
+  "estimated_time": 45,
+  "prerequisites": ["Prerequisite 1"],
+  "tags": ["tag1", "tag2"]
+}
+```
+
+**Response**:
+```json
+{
+  "data": {
+    "id": "content-456",
+    "title": "New Chapter Title",
+    "type": "chapter",
+    "content": "# New Chapter\n\nContent goes here...",
+    "objectives": [
+      "Objective 1",
+      "Objective 2"
+    ],
+    "difficulty": "intermediate",
+    "estimated_time": 45,
+    "prerequisites": ["Prerequisite 1"],
+    "authors": ["Current User"],
+    "tags": ["tag1", "tag2"],
+    "created_date": "2026-01-05T11:00:00Z",
+    "last_updated": "2026-01-05T11:00:00Z"
+  }
+}
+```
+
+#### Update Content
+
+```
+PUT /content/{content_id}
+```
+
+**Description**: Update an existing piece of book content.
+
+**Request Body**: Same as create, but all fields are optional.
+
+**Response**: Same as create.
+
+#### Delete Content
+
+```
+DELETE /content/{content_id}
+```
+
+**Description**: Delete a piece of book content.
+
+**Response**:
+```json
+{
+  "message": "Content deleted successfully"
+}
+```
+
+### 2. Learning Path Management
+
+#### Get All Learning Paths
+
+```
+GET /learning-paths
+```
+
+**Description**: Retrieve a list of all learning paths.
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "id": "path-123",
+      "name": "Beginner's Path to Physical AI",
+      "description": "A path for beginners to learn Physical AI concepts",
+      "target_audience": "beginner",
+      "duration": 40,
+      "created_date": "2026-01-05T10:00:00Z",
+      "last_updated": "2026-01-05T10:00:00Z"
+    }
+  ]
+}
+```
+
+#### Get Specific Learning Path
+
+```
+GET /learning-paths/{path_id}
+```
+
+**Description**: Retrieve a specific learning path by ID.
+
+**Response**:
+```json
+{
+  "data": {
+    "id": "path-123",
+    "name": "Beginner's Path to Physical AI",
+    "description": "A path for beginners to learn Physical AI concepts",
+    "target_audience": "beginner",
+    "duration": 40,
+    "prerequisites": ["Basic Python", "Basic AI/ML concepts"],
+    "milestones": [
+      {
+        "title": "Complete Part I",
+        "description": "Understand Physical AI fundamentals"
+      }
+    ],
+    "learning_outcomes": [
+      "Understand core concepts of Physical AI",
+      "Set up simulation environments"
+    ],
+    "content_items": [
+      {
+        "id": "content-123",
+        "title": "Introduction to Physical AI",
+        "type": "chapter",
+        "position": 1
+      }
+    ],
+    "created_date": "2026-01-05T10:00:00Z",
+    "last_updated": "2026-01-05T10:00:00Z"
+  }
+}
+```
+
+### 3. Exercise Management
+
+#### Get Exercises for Content
+
+```
+GET /content/{content_id}/exercises
+```
+
+**Description**: Retrieve exercises associated with a specific content item.
+
+**Response**:
+```json
+{
+  "data": [
+    {
+      "id": "exercise-789",
+      "title": "Identify Physical vs Digital AI",
+      "type": "multiple-choice",
+      "question": "Which of the following is an example of Physical AI?",
+      "options": [
+        "A chatbot",
+        "A robot navigating a room",
+        "A recommendation system",
+        "A language translation service"
+      ],
+      "correct_answer": "A robot navigating a room",
+      "explanation": "Physical AI involves AI systems that interact with the physical world..."
+    }
+  ]
+}
+```
+
+## Rate Limits
+
+- 1000 requests per hour per authenticated user
+- 10,000 requests per hour per IP for unauthenticated endpoints
+
+## Status Codes
+
+- `200`: Success
+- `201`: Created
+- `400`: Bad Request
+- `401`: Unauthorized
+- `403`: Forbidden
+- `404`: Not Found
+- `429`: Too Many Requests
+- `500`: Internal Server Error
