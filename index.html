@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physical AI Book</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .module-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .module-item {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .module-title {
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+        .lesson-list {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .lesson-item {
+            margin: 5px 0;
+        }
+        .lesson-link {
+            color: #27ae60;
+            text-decoration: none;
+        }
+        .lesson-link:hover {
+            text-decoration: underline;
+        }
+        .content-display {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        .back-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+        .markdown-content {
+            line-height: 1.6;
+        }
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4,
+        .markdown-content h5,
+        .markdown-content h6 {
+            color: #2c3e50;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+        .markdown-content h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.3em;
+        }
+        .markdown-content h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.3em;
+        }
+        .markdown-content p {
+            margin-bottom: 16px;
+        }
+        .markdown-content ul,
+        .markdown-content ol {
+            margin-bottom: 16px;
+            padding-left: 2em;
+        }
+        .markdown-content li {
+            margin-bottom: 4px;
+        }
+        .markdown-content code {
+            background-color: #f6f8fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+        .markdown-content pre {
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow: auto;
+            margin-bottom: 16px;
+        }
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        .markdown-content blockquote {
+            border-left: 4px solid #ddd;
+            padding-left: 16px;
+            color: #666;
+            margin: 16px 0;
+        }
+        .markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        .markdown-content th,
+        .markdown-content td {
+            border: 1px solid #dfe2e5;
+            padding: 6px 13px;
+        }
+        .markdown-content th {
+            background-color: #f6f8fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Physical AI Book</h1>
+        <div id="module-view">
+            <h2>Table of Contents</h2>
+            <ul class="module-list" id="modules-list">
+                <!-- Modules will be populated by JavaScript -->
+            </ul>
+        </div>
+        <div id="content-view" class="content-display">
+            <button class="back-button" onclick="showModules()">← Back to Table of Contents</button>
+            <div id="content-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        // Define the book structure
+        const bookStructure = {
+            "01-introduction": {
+                title: "Introduction",
+                lessons: [
+                    { id: "01-digital-ai-vs-physical-ai", title: "Digital AI vs Physical AI" },
+                    { id: "02-principles-of-embodied-intelligence", title: "Principles of Embodied Intelligence" },
+                    { id: "03-applications-of-physical-ai-in-humanoid-robotics", title: "Applications of Physical AI in Humanoid Robotics" },
+                    { id: "04-setting-up-the-development-environment", title: "Setting up the Development Environment" },
+                    { id: "exercise", title: "Exercise" }
+                ]
+            },
+            "02-ros-fundamentals": {
+                title: "ROS Fundamentals",
+                lessons: [
+                    { id: "01-ros2-architecture-overview", title: "ROS2 Architecture Overview" },
+                    { id: "02-nodes-topics-services-actions", title: "Nodes, Topics, Services, Actions" },
+                    { id: "03-message-types-and-communication-patterns", title: "Message Types and Communication Patterns" },
+                    { id: "04-building-your-first-ros2-package", title: "Building Your First ROS2 Package" },
+                    { id: "05-advanced-ros2-concepts", title: "Advanced ROS2 Concepts" },
+                    { id: "exercise", title: "Exercise" }
+                ]
+            },
+            "03-sensorimotor-integration": {
+                title: "Sensorimotor Integration",
+                lessons: [
+                    { id: "01-introduction-to-sensorimotor-systems", title: "Introduction to Sensorimotor Systems" },
+                    { id: "02-types-of-sensors-in-robotics", title: "Types of Sensors in Robotics" },
+                    { id: "03-sensor-data-processing-and-filtering", title: "Sensor Data Processing and Filtering" },
+                    { id: "04-creating-perception-action-loops", title: "Creating Perception-Action Loops" },
+                    { id: "05-implementing-feedback-control-systems", title: "Implementing Feedback Control Systems" },
+                    { id: "exercise", title: "Exercise" }
+                ]
+            },
+            "04-robot-simulation": {
+                title: "Robot Simulation",
+                lessons: [
+                    { id: "01-introduction-to-robot-simulation", title: "Introduction to Robot Simulation" },
+                    { id: "02-gazebo-simulation-environment-setup", title: "Gazebo Simulation Environment Setup" },
+                    { id: "03-creating-robot-models-and-environments", title: "Creating Robot Models and Environments" },
+                    { id: "04-physics-simulation-and-collision-detection", title: "Physics Simulation and Collision Detection" },
+                    { id: "05-unity-robotics-simulation", title: "Unity Robotics Simulation" },
+                    { id: "exercise", title: "Exercise" }
+                ]
+            }
+        };
+
+        // Populate the modules list
+        const modulesList = document.getElementById('modules-list');
+        for (const [moduleId, moduleData] of Object.entries(bookStructure)) {
+            const li = document.createElement('li');
+            li.className = 'module-item';
+
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'module-title';
+            titleDiv.textContent = `${moduleId.split('-')[0]}. ${moduleData.title}`;
+            li.appendChild(titleDiv);
+
+            const lessonsUl = document.createElement('ul');
+            lessonsUl.className = 'lesson-list';
+
+            moduleData.lessons.forEach(lesson => {
+                const lessonLi = document.createElement('li');
+                lessonLi.className = 'lesson-item';
+
+                const lessonLink = document.createElement('a');
+                lessonLink.href = '#';
+                lessonLink.className = 'lesson-link';
+                lessonLink.textContent = lesson.title;
+                lessonLink.onclick = (e) => {
+                    e.preventDefault();
+                    loadContent(moduleId, lesson.id);
+                };
+
+                lessonLi.appendChild(lessonLink);
+                lessonsUl.appendChild(lessonLi);
+            });
+
+            li.appendChild(lessonsUl);
+            modulesList.appendChild(li);
+        }
+
+        // Function to load content
+        async function loadContent(moduleId, lessonId) {
+            document.getElementById('module-view').style.display = 'none';
+            document.getElementById('content-view').style.display = 'block';
+
+            try {
+                // Show loading message
+                document.getElementById('content-body').innerHTML = `
+                    <h2>${bookStructure[moduleId].title}: ${getLessonTitle(moduleId, lessonId)}</h2>
+                    <p>Loading content...</p>
+                `;
+
+                // Fetch the actual markdown content
+                const response = await fetch(`my-book/content/modules/${moduleId}/${lessonId}.md`);
+                if (response.ok) {
+                    const markdownContent = await response.text();
+                    const htmlContent = marked.parse(markdownContent);
+
+                    document.getElementById('content-body').innerHTML = `
+                        <h2>${bookStructure[moduleId].title}: ${getLessonTitle(moduleId, lessonId)}</h2>
+                        <div class="markdown-content">${htmlContent}</div>
+                    `;
+                } else {
+                    throw new Error('Content not found');
+                }
+            } catch (error) {
+                document.getElementById('content-body').innerHTML = `
+                    <h2>${bookStructure[moduleId].title}: ${getLessonTitle(moduleId, lessonId)}</h2>
+                    <p>Sorry, the content for "${getLessonTitle(moduleId, lessonId)}" could not be loaded.</p>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Helper function to get lesson title
+        function getLessonTitle(moduleId, lessonId) {
+            const module = bookStructure[moduleId];
+            const lesson = module.lessons.find(l => l.id === lessonId);
+            return lesson ? lesson.title : lessonId;
+        }
+
+        // Function to show modules view
+        function showModules() {
+            document.getElementById('module-view').style.display = 'block';
+            document.getElementById('content-view').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
